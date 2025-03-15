@@ -118,9 +118,9 @@ with app.app_context():
 
     # Копируем swagger.json в статическую директорию
     os.makedirs('static', exist_ok=True)
-    with open('swagger.json', 'r') as f:
+    with open('swagger.json', 'r', encoding="utf-8") as f:
         swagger_data = json.load(f)
-    with open('static/swagger.json', 'w') as f:
+    with open('static/swagger.json', 'w', encoding="utf-8") as f:
         json.dump(swagger_data, f)
 
 
