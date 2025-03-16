@@ -5,7 +5,7 @@ import requests
 # Данный код не является тестом!!! он создан для демонстарации того какой адресс внутри контейнера
 def test_example_api():
 
-  url = "http://web:5000/api/"
+  url = "http://localhost:5000/"
 
   headers = {
       "accept": "application/json",

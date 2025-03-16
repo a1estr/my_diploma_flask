@@ -17,8 +17,11 @@ class LoginUser(Endpoint):
 
     def login_user(self, user_data):
         session = requests.Session()
-        self.response = session.post(f'{self.url}/api/login',
-                                      json=user_data, headers=self.headers)
+        self.response = session.post(
+            f'{self.url}/api/login',
+            json=user_data,
+            headers=self.headers
+        )
         self.response_json = self.response.json()
         return session
 

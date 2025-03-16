@@ -16,3 +16,12 @@ class RegisterUser(Endpoint):
         self.response = requests.post(f'{self.url}/api/register',
                                       json=user_data, headers=self.headers)
         self.response_json = self.response.json()
+
+    @staticmethod
+    def user_not_exists(cursor, username):
+        cursor.execute(
+            'SELECT COUNT(*) from "user" WHERE username =%s',
+            (username,)
+        )
+        count = cursor.fetchone()[0]
+        return count == 0

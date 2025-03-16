@@ -2,7 +2,7 @@ import requests
 from tests.api.endpoints.base_endpoint import Endpoint
 
 
-class CreateTask(Endpoint):
+class DeleteTask(Endpoint):
     schema = {
         "type": "object",
         "properties": {
@@ -23,12 +23,15 @@ class CreateTask(Endpoint):
         ]
     }
 
-    def create_task(self, task_data, session):
-        self.response = session.post(f'{self.url}/api/tasks',
-                                     json=task_data, headers=self.headers)
-        self.response_json = self.response.json()
+    def delete_task(self, session, task_id):
+        self.response = session.delete(f'{self.url}/api/tasks/{task_id}')
 
-    def create_task_non_auth(self, task_data):
-        self.response = requests.post(f'{self.url}/api/tasks',
-                                      json=task_data, headers=self.headers)
-        self.response_json = self.response.json()
+    def delete_task_non_auth(self, task_id):
+        self.response = requests.delete(f'{self.url}/api/tasks/{task_id}')
+
+    @staticmethod
+    def check_task_deleted_from_db(cursor, task_id):
+        cursor.execute("SELECT * FROM task WHERE id = %s", (task_id,))
+        task = cursor.fetchone()
+        assert task is None, \
+            f"Задача с ID {task_id} не была удалена из базы данных"

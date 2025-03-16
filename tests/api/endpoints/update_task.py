@@ -2,7 +2,7 @@ import requests
 from tests.api.endpoints.base_endpoint import Endpoint
 
 
-class CreateTask(Endpoint):
+class UpdateTask(Endpoint):
     schema = {
         "type": "object",
         "properties": {
@@ -12,6 +12,7 @@ class CreateTask(Endpoint):
             "created_at": {"type": "string"},
             "completed": {"type": "boolean"},
             "user_id": {"type": "integer"}
+
         },
         "required": [
             "id",
@@ -23,12 +24,18 @@ class CreateTask(Endpoint):
         ]
     }
 
-    def create_task(self, task_data, session):
-        self.response = session.post(f'{self.url}/api/tasks',
-                                     json=task_data, headers=self.headers)
+    def update_task(self, session, task_id, task_data):
+        self.response = session.put(
+            f'{self.url}/api/tasks/{task_id}',
+            json=task_data,
+            headers=self.headers
+        )
         self.response_json = self.response.json()
 
-    def create_task_non_auth(self, task_data):
-        self.response = requests.post(f'{self.url}/api/tasks',
-                                      json=task_data, headers=self.headers)
+    def update_task_non_auth(self, task_id, task_data):
+        self.response = requests.put(
+            f'{self.url}/api/tasks/{task_id}',
+            json=task_data,
+            headers=self.headers
+        )
         self.response_json = self.response.json()
