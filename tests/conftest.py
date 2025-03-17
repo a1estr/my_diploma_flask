@@ -1,5 +1,13 @@
 import pytest
 import psycopg2
+from selenium import webdriver
+from faker import Faker
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from settings import db_params
 from tests.api.endpoints.register_user import RegisterUser
 from tests.api.endpoints.login_user import LoginUser
@@ -38,3 +46,52 @@ def created_task(connect_to_db):
     yield task_id, task_status
     delete_task = DeleteTask()
     delete_task.delete_task(session, task_id)
+
+
+@pytest.fixture
+def chrom_driver():
+    """
+    Фикстура для настройки Chrome WEB-драйвера
+    """
+    options = ChromeOptions()
+    options.add_argument("--start-maximized")
+    service = ChromeService(ChromeDriverManager().install())
+    config_driver = webdriver.Chrome(service=service, options=options)
+    yield config_driver
+    config_driver.quit()
+
+
+@pytest.fixture
+def unique_user_data():
+    """
+    Фикстура для генерации уникальных данных пользователя
+    """
+    fake = Faker()
+    username = fake.user_name()
+    password = fake.password(length=6)
+    return username, password
+
+
+@pytest.fixture(params=["chrome", "firefox"])
+def driver(request):
+    """
+    Фикстура для запуска тестов в двух браузерах
+    (Chrome и Firefox)
+    """
+    browser = request.param
+    config_driver = None
+
+    if browser == "chrome":
+        options = ChromeOptions()
+        options.add_argument("--start-maximized")
+        service = ChromeService(ChromeDriverManager().install())
+        config_driver = webdriver.Chrome(service=service, options=options)
+
+    elif browser == "firefox":
+        options = FirefoxOptions()
+        options.add_argument("--start-maximized")
+        service = FirefoxService(GeckoDriverManager().install())
+        config_driver = webdriver.Firefox(service=service, options=options)
+
+    yield config_driver
+    config_driver.quit()
