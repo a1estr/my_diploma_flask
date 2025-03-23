@@ -67,8 +67,12 @@ pipeline {
         stage('Generate Test Coverage Report') {
             steps {
                 script {
+                    // Убедимся, что каталог доступен в контейнере
+                    sh "docker compose run --rm test ls -l /app/src"
                     // Генерация отчета о покрытии тестов
-                    sh "docker compose run --rm -e TEST_PATH=src -e TEST_ARGS='--cov=src --cov-report=xml --cov-report=html:${env.COVERAGE_REPORT_DIR}' test"
+                    sh """
+                      docker compose run --rm test pytest --cov=/app/src --cov-report=xml --cov-report=html:${env.COVERAGE_REPORT_DIR}
+                    """
                 }
             }
         }
