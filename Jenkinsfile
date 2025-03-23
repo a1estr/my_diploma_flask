@@ -26,11 +26,13 @@ pipeline {
         }
 
 
-        stage('Prepare Allure Results Directory') {
+        stage('Prepare Results Directories') {
             steps {
                 script {
                     // Cоздаем директорию для результатов Allure
                     sh "mkdir -p ${env.ALLURE_RESULTS_DIR}"
+                    // Cоздаем директорию для результатов покрытия тестов
+                    sh "mkdir -p ${env.COVERAGE_REPORT_DIR}"
                 }
             }
         }
