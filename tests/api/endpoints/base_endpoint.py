@@ -86,5 +86,5 @@ class Endpoint:
             (task_data['title'],)
         )
         count = cursor.fetchone()[0]
-        assert count == 0,\
+        assert count == 0, \
             f"Задача c именем {task_data['title']} ,была добавлена в БД"

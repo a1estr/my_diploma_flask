@@ -40,4 +40,3 @@ class ToggleStatus(Endpoint):
         task = cursor.fetchone()
         assert task[4] == status, \
             f"Статус задачи в базе данных {task[4]} был изменен на {status}"
-
