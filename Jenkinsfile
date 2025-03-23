@@ -12,8 +12,10 @@ pipeline {
         stage('Build and Start Services') {
             steps {
                 script {
+                    // Задаем переменную MY_APP_DIR
                     env.MY_APP_DIR = "/var/lib/docker/volumes/jenkins-data-flask/_data/workspace/${env.JOB_NAME}"
                     echo "MY_APP_DIR is ${env.MY_APP_DIR}"
+                    // Выполняем команду в оболочке; переменная MY_APP_DIR будет доступна благодаря env.
                     sh """
                         echo "Using MY_APP_DIR: \$MY_APP_DIR"
                         docker compose up --build web db -d
@@ -22,10 +24,11 @@ pipeline {
             }
         }
 
-        // Стадия создания директории для результатов Allure
+
         stage('Prepare Allure Results Directory') {
             steps {
                 script {
+                    // Cоздаем директорию для результатов Allure
                     sh "mkdir -p ${env.ALLURE_RESULTS_DIR}"
                 }
             }
@@ -34,6 +37,7 @@ pipeline {
         stage('Run Database Connection Test') {
             steps {
                 script {
+                    // Запускаем тестовый сервис для проверки подлючения к БД
                     sh "docker compose run --rm -e TEST_PATH=tests/test_db_connection.py -e TEST_ARGS='--alluredir=${env.ALLURE_RESULTS_DIR}' test"
                 }
             }
@@ -42,6 +46,7 @@ pipeline {
         stage('Run API Tests') {
             steps {
                 script {
+                    // Запускаем тестовый сервис для тестирования API
                     sh "docker compose run --rm -e TEST_PATH=tests/api -e TEST_ARGS='--alluredir=${env.ALLURE_RESULTS_DIR}' test"
                 }
             }
@@ -50,6 +55,7 @@ pipeline {
         stage('Run UI Tests') {
             steps {
                 script {
+                    // Запускаем тестовый сервис для тестирования UI
                     sh "docker compose run --rm -e TEST_PATH=tests/ui -e TEST_ARGS='--alluredir=${env.ALLURE_RESULTS_DIR}' test"
                 }
             }
@@ -58,8 +64,8 @@ pipeline {
         stage('Generate Test Coverage Report') {
             steps {
                 script {
-                    sh "pytest --cov=src --cov-report=xml > coverage.xml"
-                    junit '**/test-*.xml'
+                    // Генерация отчета о покрытии тестов
+                    sh "docker compose run --rm -e TEST_PATH=src -e TEST_ARGS='--cov=src --cov-report=xml --cov-report=html:${env.COVERAGE_REPORT_DIR}' test"
                 }
             }
         }
