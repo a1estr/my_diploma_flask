@@ -4,14 +4,14 @@ from tests.api.endpoints.get_task import GetTask
 from tests.api.endpoints.update_task import UpdateTask
 from tests.api.endpoints.toggle_status import ToggleStatus
 from tests.api.endpoints.delete_task import DeleteTask
-from tests.api.data.task_data import valid_task_data1, valid_updated_task_data1
+from tests.data.task_data import valid_task_data1, valid_updated_task_data1
 
 
 @allure.feature('Безопасность API')
 @allure.story('Создание задачи')
 @allure.title('Создание задачи без авторизации')
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.tag("API", "Security", "Create")
+@allure.tag("API", "Security", "Create", "Tasks")
 def test_security_create_task(connect_to_db):
     # Попытаемся создать задачу без авторизации
     with allure.step('Попытка создать задачу без авторизации'):
@@ -40,7 +40,7 @@ def test_security_create_task(connect_to_db):
 @allure.story('Обновление задачи')
 @allure.title('Обновление задачи без авторизации')
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.tag("API", "Security", "Update")
+@allure.tag("API", "Security", "Update", "Tasks")
 def test_security_update_task(connect_to_db, created_task):
     # Получим ID уже созданной задачи в БД
     task_id = created_task[0]
@@ -72,7 +72,7 @@ def test_security_update_task(connect_to_db, created_task):
 @allure.story('Получение задачи по ID')
 @allure.title('Получение задачи по ID без авторизации')
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.tag("API", "Security", "Get")
+@allure.tag("API", "Security", "Get", "Tasks")
 def test_security_get_task(created_task):
     # Получим ID уже созданной задачи в БД
     task_id = created_task[0]
@@ -100,7 +100,7 @@ def test_security_get_task(created_task):
 @allure.story('Изменение статуса задачи')
 @allure.title('Изменение статуса задачи без авторизации')
 @allure.severity(allure.severity_level.NORMAL)
-@allure.tag("API", "Security", "Status")
+@allure.tag("API", "Security", "Status", "Tasks")
 def test_security_toggle_status(connect_to_db, created_task):
     # Получим ID уже созданной задачи в БД
     task_id, completed = created_task
@@ -132,7 +132,7 @@ def test_security_toggle_status(connect_to_db, created_task):
 @allure.story('Удаление задачи')
 @allure.title('Удаление задачи без авторизации')
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.tag("API", "Security", "Delete")
+@allure.tag("API", "Security", "Delete", "Tasks")
 def test_security_delete_task(connect_to_db, created_task):
     # Получим ID уже созданной задачи в БД
     task_id = created_task[0]

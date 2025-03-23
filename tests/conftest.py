@@ -8,13 +8,15 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from settings import db_params
+from tests.settings import db_params
 from tests.api.endpoints.register_user import RegisterUser
 from tests.api.endpoints.login_user import LoginUser
 from tests.api.endpoints.create_task import CreateTask
-from tests.api.data.user_data import valid_user_data1
-from tests.api.data.task_data import valid_task_data1
+from tests.data.user_data import valid_user_data1
+from tests.data.task_data import valid_task_data1
 from tests.api.endpoints.delete_task import DeleteTask
+from tests.ui.pages.login_page import LoginPage
+from tests.ui.pages.register_page import RegisterPage
 
 
 @pytest.fixture
@@ -49,19 +51,6 @@ def created_task(connect_to_db):
 
 
 @pytest.fixture
-def chrom_driver():
-    """
-    Фикстура для настройки Chrome WEB-драйвера
-    """
-    options = ChromeOptions()
-    options.add_argument("--start-maximized")
-    service = ChromeService(ChromeDriverManager().install())
-    config_driver = webdriver.Chrome(service=service, options=options)
-    yield config_driver
-    config_driver.quit()
-
-
-@pytest.fixture
 def unique_user_data():
     """
     Фикстура для генерации уникальных данных пользователя
@@ -72,7 +61,7 @@ def unique_user_data():
     return username, password
 
 
-@pytest.fixture(params=["chrome", "firefox"])
+@pytest.fixture(params=["Chrome", "Firefox"])
 def driver(request):
     """
     Фикстура для запуска тестов в двух браузерах
@@ -81,17 +70,44 @@ def driver(request):
     browser = request.param
     config_driver = None
 
-    if browser == "chrome":
+    if browser == "Chrome":
         options = ChromeOptions()
-        options.add_argument("--start-maximized")
-        service = ChromeService(ChromeDriverManager().install())
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument('--disable-gpu')
+        options.add_argument("--headless")
+        options.add_argument("--window-size=1920,1080")
+        options.binary_location = '/usr/bin/google-chrome-stable'
+        service = ChromeService('/usr/local/bin/chromedriver')
         config_driver = webdriver.Chrome(service=service, options=options)
 
-    elif browser == "firefox":
+    elif browser == "Firefox":
         options = FirefoxOptions()
-        options.add_argument("--start-maximized")
+        options.add_argument("--headless")
+        options.add_argument("--window-size=1920,1080")
+        options.binary_location = '/usr/bin/firefox'
         service = FirefoxService(GeckoDriverManager().install())
         config_driver = webdriver.Firefox(service=service, options=options)
 
     yield config_driver
     config_driver.quit()
+
+
+@pytest.fixture
+def driver_login(driver, connect_to_db):
+    """
+    Фикстура для предварительной регистрации пользователя
+    и авторизации в системе
+    """
+
+    # Регистрация пользователя, если его нет в бд
+    register_page = RegisterPage(driver)
+    username, password = valid_user_data1['username'], valid_user_data1["password"]
+    if register_page.user_not_exists(connect_to_db, username):
+        register_page.get_register_page()
+        register_page.valid_register(username, password)
+
+    # Вход в систему
+    login_page = LoginPage(driver)
+    login_page.valid_login(username, password)
+    return driver

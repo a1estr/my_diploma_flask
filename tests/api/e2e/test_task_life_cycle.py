@@ -7,11 +7,11 @@ from tests.api.endpoints.get_task import GetTask
 from tests.api.endpoints.update_task import UpdateTask
 from tests.api.endpoints.toggle_status import ToggleStatus
 from tests.api.endpoints.delete_task import DeleteTask
-from tests.api.data.user_data import valid_user_data1, valid_user_data2
-from tests.api.data.task_data import (valid_task_data1,
-                                      valid_task_data2,
-                                      valid_updated_task_data1,
-                                      valid_updated_task_data2)
+from tests.data.user_data import valid_user_data1, valid_user_data2
+from tests.data.task_data import (valid_task_data1,
+                                  valid_task_data2,
+                                  valid_updated_task_data1,
+                                  valid_updated_task_data2)
 
 
 @pytest.mark.parametrize(
@@ -27,12 +27,15 @@ from tests.api.data.task_data import (valid_task_data1,
 @allure.story("Полный жизненный цикл задачи")
 @allure.title("Проверка полного жизненного цикла задачи через API")
 @allure.severity(allure.severity_level.BLOCKER)
-@allure.tag("API", "Smoke", "CRUD")
+@allure.tag("API", "Smoke", "CRUD", "Tasks")
 def test_task_life_cycle(connect_to_db, user_data, task_data, updated_task_data):
+    """
+    Тест проверяет полный жизненный цикл задачи через API
+    """
     # Зарегистрируем нового пользователя, если его еще нет
-    with allure.step("Регистрация нового пользователя"):
-        register = RegisterUser()
-        if register.user_not_exists(connect_to_db, user_data['username']):
+    register = RegisterUser()
+    if register.user_not_exists(connect_to_db, user_data['username']):
+        with allure.step("Регистрация нового пользователя"):
             with allure.step("Отправка запроса на регистрацию"):
                 register.register_user(user_data)
                 allure.attach(

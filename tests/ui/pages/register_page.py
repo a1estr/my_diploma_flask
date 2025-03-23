@@ -28,13 +28,16 @@ class RegisterPage(BasePage):
     def go_to_login_page(self):
         self.click_element(self.LOGIN_LINK)
 
+    def valid_register(self, username, password):
+        self.enter_username(username)
+        self.enter_password(password)
+        self.click_register()
+
     @staticmethod
-    def check_user_in_db(cursor, username):
-            cursor.execute(
-                'SELECT * from "user" WHERE username =%s', (username,)
-            )
-            created_user = cursor.fetchone()
-            assert created_user is not None, "Пользователь не был найден в БД"
-            assert created_user[1] == username, \
-                (f"Username не совпадает. Ожидалось '{username}',"
-             f"но получено {created_user[1]}.")
+    def user_not_exists(cursor, username):
+        cursor.execute(
+            'SELECT COUNT(*) from "user" WHERE username =%s',
+            (username,)
+        )
+        count = cursor.fetchone()[0]
+        return count == 0

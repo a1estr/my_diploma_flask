@@ -41,7 +41,9 @@ services:
   test:
     build:
       context: .
-      dockerfile: tests/Dockerfile.test
+      dockerfile: ./tests/Dockerfile.test
+      platforms:
+        - linux/amd64
     volumes:
       - ${MY_APP_DIR:-.}:/app
     environment:

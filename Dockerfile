@@ -2,12 +2,13 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
+# Устанавливаем зависимости для psycopg2
+RUN apt-get update && apt-get install -y \
+    libpq-dev gcc curl && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && \
-    apt-get update && \
-    apt-get install -y curl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
@@ -16,5 +17,4 @@ ENV FLASK_RUN_HOST=0.0.0.0
 
 EXPOSE 5000
 
-# Скрипт для ожидания готовности базы данных и запуска приложения
 CMD ["flask", "run"]
