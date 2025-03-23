@@ -1,29 +1,43 @@
 pipeline {
     agent any
 
+    environment {
+        TELEGRAM_API_TOKEN = '7444074270:AAHIu2OqOaIUTr7X2VOoiI-kmtT21V8k7HM'
+        TELEGRAM_CHAT_ID = '205318699'
+    }
+
     stages {
         stage('Run Linter Tests') {
             steps {
-              script {
-                env.MY_APP_DIR = "/var/lib/docker/volumes/jenkins-data-flask/_data/workspace/${env.JOB_NAME}"
-                echo "MY_APP_DIR is ${env.MY_APP_DIR}"
-                sh "docker compose run lint"
-              }
+                script {
+                    env.MY_APP_DIR = "/var/lib/docker/volumes/jenkins-data-flask/_data/workspace/${env.JOB_NAME}"
+                    echo "MY_APP_DIR is ${env.MY_APP_DIR}"
+                    sh "docker-compose run --rm lint"
+                }
             }
         }
     }
 
     post {
-        success {
-            echo "Lint passed successfully."
+        always {
+            script {
+                def statusMessage = (currentBuild.result == 'SUCCESS') ?
+                    "Linting passed successfully in ${env.JOB_NAME}." :
+                    "Linting failed in ${env.JOB_NAME}. Please check the logs."
+
+                sh """
+                curl -s -X POST https://api.telegram.org/bot${env.TELEGRAM_API_TOKEN}/sendMessage \
+                -d chat_id=${env.TELEGRAM_CHAT_ID} \
+                -d text="${statusMessage}"
+                """
+            }
         }
-        failure {
-            echo "Lint failed. Check the logs."
-            currentBuild.result = 'FAILURE'
-        }
+
         cleanup {
-            echo 'Cleaning up...'
-            deleteDir()
+            script {
+                echo 'Cleaning up...'
+                deleteDir()
+            }
         }
     }
 }
