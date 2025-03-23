@@ -13,6 +13,10 @@ from tests.data.task_data import valid_task_data1, valid_updated_task_data1
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.tag("API", "Security", "Create", "Tasks")
 def test_security_create_task(connect_to_db):
+    """
+    Тест проверяет невозможность создания новой задачи
+    без авторизации
+    """
     # Попытаемся создать задачу без авторизации
     with allure.step('Попытка создать задачу без авторизации'):
         create_task = CreateTask()
@@ -42,6 +46,10 @@ def test_security_create_task(connect_to_db):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.tag("API", "Security", "Update", "Tasks")
 def test_security_update_task(connect_to_db, created_task):
+    """
+    Тест проверяет невозможность обновления имеющейся задачи
+    без авторизации
+    """
     # Получим ID уже созданной задачи в БД
     task_id = created_task[0]
 
@@ -74,6 +82,10 @@ def test_security_update_task(connect_to_db, created_task):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.tag("API", "Security", "Get", "Tasks")
 def test_security_get_task(created_task):
+    """
+    Тест проверяет невозможность получения задачи по ID
+    без авторизации
+    """
     # Получим ID уже созданной задачи в БД
     task_id = created_task[0]
 
@@ -102,6 +114,10 @@ def test_security_get_task(created_task):
 @allure.severity(allure.severity_level.NORMAL)
 @allure.tag("API", "Security", "Status", "Tasks")
 def test_security_toggle_status(connect_to_db, created_task):
+    """
+    Тест проверяет невозможность изменения статуса задачи
+    без авторизации
+    """
     # Получим ID уже созданной задачи в БД
     task_id, completed = created_task
 
@@ -134,6 +150,10 @@ def test_security_toggle_status(connect_to_db, created_task):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.tag("API", "Security", "Delete", "Tasks")
 def test_security_delete_task(connect_to_db, created_task):
+    """
+    Тест проверяет невозможность удаления задачи
+    без авторизации
+    """
     # Получим ID уже созданной задачи в БД
     task_id = created_task[0]
 

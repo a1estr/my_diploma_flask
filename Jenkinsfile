@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         ALLURE_RESULTS_DIR = 'allure-results'
+        TELEGRAM_API_TOKEN = '7444074270:AAHIu2OqOaIUTr7X2VOoiI-kmtT21V8k7HM'
+        TELEGRAM_CHAT_ID = '205318699'
     }
 
     stages {
@@ -10,10 +12,8 @@ pipeline {
         stage('Build and Start Services') {
             steps {
                 script {
-                    // Задаем переменную MY_APP_DIR 
                     env.MY_APP_DIR = "/var/lib/docker/volumes/jenkins-data-flask/_data/workspace/${env.JOB_NAME}"
                     echo "MY_APP_DIR is ${env.MY_APP_DIR}"
-                    // Выполняем команду в оболочке; переменная MY_APP_DIR будет доступна благодаря env.
                     sh """
                         echo "Using MY_APP_DIR: \$MY_APP_DIR"
                         docker compose up --build web db -d
@@ -21,13 +21,45 @@ pipeline {
                 }
             }
         }
-        stage('Run Tests') {
+
+        // Стадия создания директории для результатов Allure
+        stage('Prepare Allure Results Directory') {
             steps {
                 script {
-                    // Создаем директорию для результатов
                     sh "mkdir -p ${env.ALLURE_RESULTS_DIR}"
-                    // Запускаем тестовый сервис; переменная ALLURE_RESULTS_DIR будет доступна
-                    sh "docker compose run --rm -e TEST_PATH=tests/ -e TEST_ARGS='--alluredir=${env.ALLURE_RESULTS_DIR}' test"
+                }
+            }
+        }
+
+        stage('Run Database Connection Test') {
+            steps {
+                script {
+                    sh "docker compose run --rm -e TEST_PATH=tests/test_db_connection.py -e TEST_ARGS='--alluredir=${env.ALLURE_RESULTS_DIR}' test"
+                }
+            }
+        }
+
+        stage('Run API Tests') {
+            steps {
+                script {
+                    sh "docker compose run --rm -e TEST_PATH=tests/api -e TEST_ARGS='--alluredir=${env.ALLURE_RESULTS_DIR}' test"
+                }
+            }
+        }
+
+        stage('Run UI Tests') {
+            steps {
+                script {
+                    sh "docker compose run --rm -e TEST_PATH=tests/ui -e TEST_ARGS='--alluredir=${env.ALLURE_RESULTS_DIR}' test"
+                }
+            }
+        }
+
+        stage('Generate Test Coverage Report') {
+            steps {
+                script {
+                    sh "pytest --cov=src --cov-report=xml > coverage.xml"
+                    junit '**/test-*.xml'
                 }
             }
         }
@@ -39,6 +71,20 @@ pipeline {
                 def resultsExist = sh(returnStatus: true, script: """
                     [ -d ${env.ALLURE_RESULTS_DIR} ] && [ \"\$(ls -A ${env.ALLURE_RESULTS_DIR})\" ]
                 """) == 0
+
+                def statusMessage = "Build finished with status: ${currentBuild.result}"
+                if (currentBuild.result == 'SUCCESS') {
+                    statusMessage = "Tests passed successfully in ${env.JOB_NAME}."
+                } else {
+                    statusMessage = "Tests failed in ${env.JOB_NAME}. Please check the logs."
+                }
+
+                // Отправка уведомления в Telegram
+                sh """
+                    curl -s -X POST https://api.telegram.org/bot${env.TELEGRAM_API_TOKEN}/sendMessage \
+                    -d chat_id=${env.TELEGRAM_CHAT_ID} \
+                    -d text="${statusMessage}"
+                """
 
                 if (resultsExist) {
                     echo 'Allure results found. Generating report...'
@@ -54,6 +100,7 @@ pipeline {
                 }
             }
         }
+
         cleanup {
             echo 'Cleaning up...'
             sh """
