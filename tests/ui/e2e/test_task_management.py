@@ -205,5 +205,5 @@ def test_task_management(driver_login):
             deleted_task_title = updated_task_data_ui["title"]
             tasks_list = tasks_page.get_task_titles_list()
             assert deleted_task_title not in tasks_list, \
-                (f'Удаленная задача "{updated_task_data_ui["title"]}"'
+                (f'Удаленная задача "{deleted_task_title}"'
                  f' все еще есть в списке')
