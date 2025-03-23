@@ -7,8 +7,6 @@ services:
       - "5000:5000"
     volumes:
       - ${MY_APP_DIR:-.}:/app
-      - ./src:/app/src
-      - ./tests:/app/tests
     environment:
       - FLASK_APP=app.py
       - FLASK_DEBUG=1

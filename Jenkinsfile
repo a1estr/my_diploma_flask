@@ -5,7 +5,6 @@ pipeline {
         ALLURE_RESULTS_DIR = 'allure-results'
         TELEGRAM_API_TOKEN = '7444074270:AAHIu2OqOaIUTr7X2VOoiI-kmtT21V8k7HM'
         TELEGRAM_CHAT_ID = '205318699'
-        COVERAGE_REPORT_DIR = 'coverage-report'
     }
 
     stages {
@@ -26,13 +25,11 @@ pipeline {
         }
 
 
-        stage('Prepare Results Directories') {
+        stage('Prepare Allure Results Directory') {
             steps {
                 script {
                     // Cоздаем директорию для результатов Allure
                     sh "mkdir -p ${env.ALLURE_RESULTS_DIR}"
-                    // Cоздаем директорию для результатов покрытия тестов
-                    sh "mkdir -p ${env.COVERAGE_REPORT_DIR}"
                 }
             }
         }
@@ -60,19 +57,6 @@ pipeline {
                 script {
                     // Запускаем тестовый сервис для тестирования UI
                     sh "docker compose run --rm -e TEST_PATH=tests/ui -e TEST_ARGS='--alluredir=${env.ALLURE_RESULTS_DIR}' test"
-                }
-            }
-        }
-
-        stage('Generate Test Coverage Report') {
-            steps {
-                script {
-                    // Убедимся, что каталог доступен в контейнере
-                    sh "docker compose run --rm test ls -l /app/src"
-                    // Генерация отчета о покрытии тестов
-                    sh """
-                      docker compose run --rm test pytest --cov=/app/src --cov-report=xml --cov-report=html:${env.COVERAGE_REPORT_DIR}
-                    """
                 }
             }
         }
