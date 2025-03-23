@@ -36,7 +36,6 @@ pipeline {
         cleanup {
             script {
                 echo 'Cleaning up...'
-                sh "docker compose down"
                 deleteDir()
             }
         }
