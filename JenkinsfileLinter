@@ -12,7 +12,7 @@ pipeline {
                 script {
                     env.MY_APP_DIR = "/var/lib/docker/volumes/jenkins-data-flask/_data/workspace/${env.JOB_NAME}"
                     echo "MY_APP_DIR is ${env.MY_APP_DIR}"
-                    sh "docker-compose run --rm lint"
+                    sh "docker compose run --rm lint"
                 }
             }
         }
