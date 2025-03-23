@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        TELEGRAM_API_TOKEN = '7444074270:AAHIu2OqOaIUTr7X2VOoiI-kmtT21V8k7HM'
-        TELEGRAM_CHAT_ID = '205318699'
+        TELEGRAM_API_TOKEN = credentials('TELEGRAM_API_TOKEN')
+        TELEGRAM_CHAT_ID = credentials('TELEGRAM_CHAT_ID')
     }
 
     stages {
