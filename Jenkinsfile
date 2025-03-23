@@ -5,6 +5,7 @@ pipeline {
         ALLURE_RESULTS_DIR = 'allure-results'
         TELEGRAM_API_TOKEN = '7444074270:AAHIu2OqOaIUTr7X2VOoiI-kmtT21V8k7HM'
         TELEGRAM_CHAT_ID = '205318699'
+        COVERAGE_REPORT_DIR = 'coverage-report'
     }
 
     stages {
