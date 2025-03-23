@@ -14,7 +14,13 @@ def test_register_and_login(driver, connect_to_db, unique_user_data):
     Тест проверяет процесс регистрации и входа в систему
     """
     # Сгенерируем уникальные данные пользователя
-    username, password = unique_user_data
+    with allure.step("Генерация тестовых данных"):
+        username, password = unique_user_data
+        allure.attach(
+            f"Сгенерированное имя пользователя: {username}\n"
+            f"Сгенерированный пароль: {password}",
+            name="Generated userdata"
+        )
 
     # Перейдем на страницу входа в систему
     with allure.step("Переход на страницу авторизации"):
