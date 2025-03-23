@@ -3,11 +3,19 @@ from tests.ui.pages.base_page import BasePage
 
 
 class TasksPage(BasePage):
-    FLASH_MESSAGE_SUCCESS = (By.CSS_SELECTOR, '[data-testid="flash-message-success"]')
+    FLASH_MESSAGE_SUCCESS = (
+        By.CSS_SELECTOR, '[data-testid="flash-message-success"]'
+    )
     LOGOUT_BUTTON = (By.CSS_SELECTOR, '[data-testid="nav-logout"]')
-    CREATE_TASK_BUTTON = (By.CSS_SELECTOR, '[data-testid="create-task-button"]')
-    CREATE_FIRST_TASK_BUTTON = (By.CSS_SELECTOR, '[data-testid="create-first-task-link"]')
-    CREATE_TASK_NAV_BUTTON = (By.CSS_SELECTOR, '[data-testid="nav-create-task"]')
+    CREATE_TASK_BUTTON = (
+        By.CSS_SELECTOR, '[data-testid="create-task-button"]'
+    )
+    CREATE_FIRST_TASK_BUTTON = (
+        By.CSS_SELECTOR, '[data-testid="create-first-task-link"]'
+    )
+    CREATE_TASK_NAV_BUTTON = (
+        By.CSS_SELECTOR, '[data-testid="nav-create-task"]'
+    )
     NO_TASKS_MESSAGE = (By.CSS_SELECTOR, '[data-testid="no-tasks-message"]')
     TASK_TITLE = (By.CSS_SELECTOR, "h5.card-title.mb-0")
     EDIT_TASK_BUTTON = (By.CSS_SELECTOR, "a.btn.btn-sm.btn-warning")

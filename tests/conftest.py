@@ -101,7 +101,8 @@ def driver_login(driver, connect_to_db):
 
     # Регистрация пользователя, если его нет в бд
     register_page = RegisterPage(driver)
-    username, password = valid_user_data1['username'], valid_user_data1["password"]
+    username, password = (valid_user_data1['username'],
+                          valid_user_data1["password"])
     if register_page.user_not_exists(connect_to_db, username):
         register_page.get_register_page()
         register_page.valid_register(username, password)

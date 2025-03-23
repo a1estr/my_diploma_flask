@@ -14,6 +14,13 @@ pipeline {
     }
 
     post {
+        success {
+            echo "Lint passed successfully."
+        }
+        failure {
+            echo "Lint failed. Check the logs."
+            currentBuild.result = 'FAILURE'
+        }
         cleanup {
             echo 'Cleaning up...'
             deleteDir()

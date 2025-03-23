@@ -54,7 +54,9 @@ def test_security_update_task(connect_to_db, created_task):
     task_id = created_task[0]
 
     # Попытаемся обновить задачу без авторизации
-    with allure.step(f'Попытка обновить задачу с ID {task_id} без авторизации'):
+    with allure.step(
+            f'Попытка обновить задачу с ID {task_id} без авторизации'
+    ):
         update_task = UpdateTask()
         update_task.update_task_non_auth(task_id, valid_updated_task_data1)
         allure.attach(
@@ -90,7 +92,9 @@ def test_security_get_task(created_task):
     task_id = created_task[0]
 
     # Попытаемся получить задачу по ID без авторизации
-    with allure.step(f'Попытка получить задачу с ID {task_id} без авторизации'):
+    with allure.step(
+            f'Попытка получить задачу с ID {task_id} без авторизации'
+    ):
         get_task = GetTask()
         get_task.get_task_non_auth(task_id)
         allure.attach(
@@ -122,7 +126,9 @@ def test_security_toggle_status(connect_to_db, created_task):
     task_id, completed = created_task
 
     # Попытаемся изменить статус задачи без авторизации
-    with allure.step(f'Попытка изменить статус задачи с ID {task_id} без авторизации'):
+    with allure.step(
+            f'Попытка изменить статус задачи с ID {task_id} без авторизации'
+    ):
         task_status = ToggleStatus()
         task_status.toggle_status_non_auth(task_id)
         allure.attach(
@@ -141,7 +147,9 @@ def test_security_toggle_status(connect_to_db, created_task):
 
     # Убедимся, что статус задачи не был изменен в бд
     with allure.step('Проверка, что статус задачи не был изменен в БД'):
-        task_status.check_status_not_changed(connect_to_db, valid_task_data1, completed)
+        task_status.check_status_not_changed(
+            connect_to_db, valid_task_data1, completed
+        )
 
 
 @allure.feature('Безопасность API')

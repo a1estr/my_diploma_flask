@@ -7,7 +7,9 @@ class EditTaskPage(BasePage):
     TASK_TITLE = (By.CSS_SELECTOR, '[data-testid="title-input"]')
     TASK_DESCRIPTION = (By.CSS_SELECTOR, '[data-testid="description-input"]')
     TASK_HEADER = (By.CLASS_NAME, "card-header")
-    COMPLETED_CHECKBOX = (By.CSS_SELECTOR, '[data-testid="completed-checkbox"]')
+    COMPLETED_CHECKBOX = (
+        By.CSS_SELECTOR, '[data-testid="completed-checkbox"]'
+    )
 
     def enter_title(self, title):
         self.enter_text(self.TASK_TITLE, title)

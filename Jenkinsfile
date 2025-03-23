@@ -9,6 +9,14 @@ pipeline {
 
     stages {
 
+        stage('Wait for Lint') {
+            steps {
+                script {
+                    build job: 'my_diploma_lint', wait: true
+                }
+            }
+        }
+
         stage('Build and Start Services') {
             steps {
                 script {

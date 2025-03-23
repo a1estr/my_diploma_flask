@@ -28,7 +28,8 @@ from tests.data.task_data import (valid_task_data1,
 @allure.title("Проверка полного жизненного цикла задачи через API")
 @allure.severity(allure.severity_level.BLOCKER)
 @allure.tag("API", "Smoke", "CRUD", "Tasks")
-def test_task_life_cycle(connect_to_db, user_data, task_data, updated_task_data):
+def test_task_life_cycle(connect_to_db, user_data,
+                         task_data, updated_task_data):
     """
     Тест проверяет полный жизненный цикл задачи через API
     """
@@ -44,7 +45,8 @@ def test_task_life_cycle(connect_to_db, user_data, task_data, updated_task_data)
                     attachment_type=allure.attachment_type.JSON
                 )
 
-            # Выполним проверки статуса запроса создания пользователя и валидации схемы
+            # Выполним проверки статуса запроса
+            # создания пользователя и валидации схемы
             with allure.step("Проверка статуса ответа и валидации схемы"):
                 response_data = register.get_data()
                 allure.attach(
@@ -89,11 +91,13 @@ def test_task_life_cycle(connect_to_db, user_data, task_data, updated_task_data)
             expected_username = user_data['username']
             actual_username = login.get_username()
             allure.attach(
-                f"Ожидаемый username: {expected_username}\nФактический: {actual_username}",
+                f"Ожидаемый username: {expected_username}\n"
+                f"Фактический: {actual_username}",
                 name="Username Comparison"
             )
             assert actual_username == expected_username, \
-                f"Несоответствие usernames: {actual_username} != {expected_username}"
+                (f"Несоответствие usernames:"
+                 f"{actual_username} != {expected_username}")
 
     # Вернем id залогиненного пользователя
     user_id = login.get_user_id()
@@ -150,17 +154,26 @@ def test_task_life_cycle(connect_to_db, user_data, task_data, updated_task_data)
                 name="Title Comparison"
             )
             assert get_task.get_task_title() == task_data['title'], (
-                f"Полученное имя задачи от сервера {get_task.get_task_title()}",
-                f"не соответствует ожидаемому {task_data['title']}")
+                f"Полученное имя задачи от сервера"
+                f"{get_task.get_task_title()}",
+                f"не соответствует ожидаемому"
+                f"{task_data['title']}")
 
             allure.attach(
-                f"Ожидаемое описание задачи: {task_data['description']} \n"
-                f"Фактическое описание задачи: {get_task.get_task_description()}",
+                f"Ожидаемое описание задачи:"
+                f"{task_data['description']} \n"
+                f"Фактическое описание задачи:"
+                f"{get_task.get_task_description()}",
                 name="Description Comparison"
             )
-            assert get_task.get_task_description() == task_data['description'], (
-                f"Полученное описание задачи от сервера {get_task.get_task_description()}",
-                f"не соответствует ожидаемому {task_data['description']}")
+            assert get_task.get_task_description() == task_data[
+                'description'
+            ], (
+                f"Полученное описание задачи от сервера"
+                f"{get_task.get_task_description()}",
+                f"не соответствует ожидаемому"
+                f"{task_data['description']}"
+            )
 
             allure.attach(
                 f"Ожидаемый user ID у задачи: {user_id} \n"
@@ -169,7 +182,7 @@ def test_task_life_cycle(connect_to_db, user_data, task_data, updated_task_data)
             )
             # Проверим, что задача принадлежит текущему пользователю
             assert get_task.get_user_id() == user_id, (
-                f"Полученный ID пользователя {get_task.get_user_id()} из созданной задачи",
+                f"Полученный ID пользователя {get_task.get_user_id()}",
                 f"не соответствует ожидаемому {user_id}")
 
     # Изменим название, описание задачи и переведем ее в выполненную
@@ -193,35 +206,55 @@ def test_task_life_cycle(connect_to_db, user_data, task_data, updated_task_data)
                 attachment_type=allure.attachment_type.JSON
             )
 
-        # Проверим содержимое полученного ответа от сервера с обновленными данными по задаче
+        # Проверим содержимое полученного ответа от сервера
+        # с обновленными данными по задаче
         with allure.step("Проверка обновленных данных задачи"):
             allure.attach(
                 f"Ожидаемое имя задачи: {updated_task_data['title']} \n"
                 f"Фактическое имя задачи: {update_task.get_task_title()}",
                 name="Title Comparison"
             )
-            assert update_task.get_task_title() == updated_task_data['title'], (
-                f"Полученное имя задачи от сервера {update_task.get_task_title()}",
-                f"не соответствует ожидаемому {updated_task_data['title']}")
+            assert update_task.get_task_title() == updated_task_data[
+                'title'
+            ], (
+                f"Полученное имя задачи от сервера"
+                f"{update_task.get_task_title()}",
+                f"не соответствует ожидаемому"
+                f"{updated_task_data['title']}"
+            )
 
             allure.attach(
-                f"Ожидаемое описание задачи:\n {updated_task_data['description']} \n"
-                f"Фактическое описание задачи:\n {update_task.get_task_description()}",
+                f"Ожидаемое описание задачи:\n"
+                f"{updated_task_data['description']} \n"
+                f"Фактическое описание задачи:\n"
+                f"{update_task.get_task_description()}",
                 name="Description Comparison"
             )
-            assert update_task.get_task_description() == updated_task_data['description'], (
-                f"Полученное описание задачи от сервера {update_task.get_task_description()}",
-                f"не соответствует ожидаемому {updated_task_data['description']}")
+            assert update_task.get_task_description() == updated_task_data[
+                'description'
+            ], (
+                f"Полученное описание задачи от сервера"
+                f"{update_task.get_task_description()}",
+                f"не соответствует ожидаемому"
+                f"{updated_task_data['description']}"
+            )
 
             if 'completed' in updated_task_data.keys():
                 allure.attach(
-                    f"Ожидаемый статус задачи: {updated_task_data['completed']} \n"
-                    f"Фактический статус задачи: {update_task.get_task_status()}",
+                    f"Ожидаемый статус задачи:"
+                    f"{updated_task_data['completed']} \n"
+                    f"Фактический статус задачи:"
+                    f"{update_task.get_task_status()}",
                     name="Status Comparison"
                 )
-                assert update_task.get_task_status() == updated_task_data['completed'], (
-                    f"Полученный статус задачи {update_task.get_task_status()}",
-                    f"не соответствует ожидаемому {updated_task_data['completed']}")
+                assert update_task.get_task_status() == updated_task_data[
+                    'completed'
+                ], (
+                    f"Полученный статус задачи"
+                    f"{update_task.get_task_status()}",
+                    f"не соответствует ожидаемому"
+                    f"{updated_task_data['completed']}"
+                )
 
         # Проверим, что данные задачи изменились в бд
         with allure.step("Проверка, что задача изменилась в БД"):
@@ -244,12 +277,14 @@ def test_task_life_cycle(connect_to_db, user_data, task_data, updated_task_data)
 
         # Проверим, что статус изменился
         with allure.step("Проверка изменения статуса"):
+            new_status = task_status.get_task_status()
+            previous_status = update_task.get_task_status()
             allure.attach(
-                f"Новый статус задачи: {task_status.get_task_status()} \n"
-                f"Предыдущий статус задачи: {update_task.get_task_status()}",
+                f"Новый статус задачи: {new_status} \n"
+                f"Предыдущий статус задачи: {previous_status}",
                 name="Status Comparison"
             )
-            assert task_status.get_task_status() is not update_task.get_task_status(), \
+            assert new_status is not previous_status, \
                 "Статус задачи не изменился"
 
     # Удалим задачу

@@ -55,7 +55,8 @@ def test_register_and_login(driver, connect_to_db, unique_user_data):
         # Проверим, что сообщение об успешной регистрации появилось
         with allure.step("Сообщение об успешной регистрации"):
             register_message = register_page.get_register_message()
-            success_register_message = "Регистрация успешна! Теперь вы можете войти"
+            success_register_message = ("Регистрация успешна!"
+                                        " Теперь вы можете войти")
             assert register_message == success_register_message, (
                 f"Неверный текст сообщения:\n {register_message}\n",
                 f"Ожидалось:\n {success_register_message}"
@@ -118,7 +119,9 @@ def test_register_and_login(driver, connect_to_db, unique_user_data):
             "Login Page after Logout"
         )
 
-        with allure.step("Редирект на страницу логина после выхода из системы"):
+        with allure.step(
+                "Редирект на страницу логина после выхода из системы"
+        ):
             assert "login" in driver.current_url, \
                 "Перенаправление на страницу входа в систему не произошло"
 

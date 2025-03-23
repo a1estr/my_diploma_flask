@@ -8,7 +8,9 @@ class RegisterPage(BasePage):
     PASSWORD_INPUT = (By.CSS_SELECTOR, '[data-testid="password-input"]')
     REGISTER_BUTTON = (By.CSS_SELECTOR, '[data-testid="register-button"]')
     LOGIN_LINK = (By.CSS_SELECTOR, '[data-testid="login-link"]')
-    REGISTER_MESSAGE = (By.CSS_SELECTOR, '[data-testid="flash-message-success"]')
+    REGISTER_MESSAGE = (
+        By.CSS_SELECTOR, '[data-testid="flash-message-success"]'
+    )
 
     def enter_username(self, username):
         self.enter_text(self.USERNAME_INPUT, username)

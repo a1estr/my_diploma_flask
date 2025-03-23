@@ -6,10 +6,14 @@ class ViewTaskPage(BasePage):
     TASK_TITLE = (By.CSS_SELECTOR, '[data-testid="task-title"]')
     TASK_DESCRIPTION = (By.CSS_SELECTOR, '[data-testid="task-description"]')
     TASK_STATUS = (By.CSS_SELECTOR, '[data-testid="task-status"]')
-    TOGGLE_STATUS_BUTTON = (By.CSS_SELECTOR, '[data-testid="toggle-status-button"]')
+    TOGGLE_STATUS_BUTTON = (
+        By.CSS_SELECTOR, '[data-testid="toggle-status-button"]'
+    )
     BACK_BUTTON = (By.CSS_SELECTOR, '[data-testid="back-button"]')
     DELETE_BUTTON = (By.CSS_SELECTOR, '[data-testid="delete-button"]')
-    DELETE_CONFIRM_BUTTON = (By.CSS_SELECTOR, '[data-testid="delete-confirm-button"]')
+    DELETE_CONFIRM_BUTTON = (
+        By.CSS_SELECTOR, '[data-testid="delete-confirm-button"]'
+    )
 
     def get_title(self):
         return self.find_element(self.TASK_TITLE).text

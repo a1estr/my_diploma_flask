@@ -67,8 +67,10 @@ def test_task_management(driver_login):
 
         # Проверим, что задача появилась в списке
         with allure.step("Появление новой задачи в списке"):
-            assert task_data_ui["title"] in tasks_page.get_task_titles_list(), \
-                f'Созданной задачи "{task_data_ui["title"]}" нет в списке задач'
+            task_title = task_data_ui["title"]
+            titles_list = tasks_page.get_task_titles_list()
+            assert task_title in titles_list, \
+                f'Созданной задачи "{task_title}" нет в списке задач'
 
     # Отредактируем созданную задачу
     with allure.step("Редактирование задачи"):
@@ -87,7 +89,9 @@ def test_task_management(driver_login):
         with allure.step("Редактирование имени и описания задачи"):
             edit_task_page.clear_fields()
             edit_task_page.enter_title(updated_task_data_ui["title"])
-            edit_task_page.enter_description(updated_task_data_ui["description"])
+            edit_task_page.enter_description(
+                updated_task_data_ui["description"]
+            )
             edit_task_page.attach_screenshot(
                 edit_task_page.COMPLETED_CHECKBOX,
                 "Edited task title and description"
@@ -133,8 +137,10 @@ def test_task_management(driver_login):
                 actual_task_description = view_task_page.get_description()
                 expected_task_description = updated_task_data_ui["description"]
                 assert actual_task_description == expected_task_description, \
-                    (f"Описание задачи:\n {actual_task_description}\n"
-                     f"Не соответствует ожидаемому:\n {expected_task_description}")
+                    (f"Описание задачи:\n"
+                     f"{actual_task_description}\n"
+                     f"Не соответствует ожидаемому:\n"
+                     f"{expected_task_description}")
 
     # Изменим статус задачи
     with allure.step("Изменение статуса задачи"):
@@ -148,13 +154,13 @@ def test_task_management(driver_login):
 
         # Проверим сообщение об успешном изменении статуса задачи
         with allure.step("Сообщение об успешном изменении статуса задачи"):
-            complete_status_message = tasks_page.get_flash_success_message()
-            expected_complete_status_message = "Задача отмечена как выполнена"
-            assert complete_status_message == expected_complete_status_message, \
+            complete_message = tasks_page.get_flash_success_message()
+            expected_complete_message = "Задача отмечена как выполнена"
+            assert complete_message == expected_complete_message, \
                 (f"Полученное сообщение о изменении статуса задачи:"
-                 f"\n {complete_status_message}\n"
+                 f"\n {complete_message}\n"
                  f"Не соответствует ожидаемому:"
-                 f"\n {expected_complete_status_message}")
+                 f"\n {expected_complete_message}")
 
         # Проверим, что статус изменился
         with allure.step("Проверка изменения статуса задачи"):
@@ -189,13 +195,15 @@ def test_task_management(driver_login):
             )
             delete_message = tasks_page.get_flash_success_message()
             expected_delete_message = "Задача успешно удалена"
-            assert complete_status_message == expected_complete_status_message, \
+            assert delete_message == expected_delete_message, \
                 (f"Полученное сообщение о удалении задачи:"
                  f"\n {delete_message}\n"
                  f"Не соответствует ожидаемому:"
                  f"\n {expected_delete_message}")
 
         with allure.step("Проверка, что задача исчезла из списка"):
-            assert updated_task_data_ui["title"] not in tasks_page.get_task_titles_list(), \
+            deleted_task_title = updated_task_data_ui["title"]
+            tasks_list = tasks_page.get_task_titles_list()
+            assert deleted_task_title not in tasks_list, \
                 (f'Удаленная задача "{updated_task_data_ui["title"]}"'
                  f' все еще есть в списке')
