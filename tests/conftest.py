@@ -50,14 +50,20 @@ def created_task(connect_to_db):
 
 
 @pytest.fixture
-def unique_user_data():
+def unique_user_data(connect_to_db):
     """
     Фикстура для генерации уникальных данных пользователя
+    и удаления пользователя после теста
     """
     fake = Faker()
+    cursor = connect_to_db
     username = fake.user_name()
     password = fake.password(length=6)
-    return username, password
+    yield username, password
+    cursor.execute(
+        'DELETE FROM "user" WHERE username =%s',
+        (username,)
+    )
 
 
 @pytest.fixture(params=["Chrome", "Firefox"])
